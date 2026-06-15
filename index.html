@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>suuug's room</title>
+</head>
+<body>
+  <main>
+
+    <a id="hero-image" href="index.html"></a>
+
+    <div id="fishtank">
+      
+    </div>
+
+    <div id="main-content">
+      <p>under construction...</p>
+      <img src="img/worker.gif" alt="construction gif">
+    </div>
+
+    <nav>
+      <div class="header">
+        <h2>Navigation</h2>
+      </div>
+      <div class="sub-links">
+        <a href="/about.html"><img src="img/bird01.gif" alt="">About Me</a>
+        <a href="/blog.html"><img src="img/writing.gif" alt="">Blog</a>
+        <a href="/photos.html"><img src="img/star.gif" alt="">Photos</a>
+        <a href="/articles.html"><img src="img/computer.gif" alt="">Articles</a>
+<!--        <a href="/"><img src="img/guitar.gif" alt="">Favorites</a> -->
+        <a href="/guestbook.html"><img src="img/book.gif" alt="">Guestbook</a>
+      </div>
+    </nav>
+
+
+    <div class="container">
+      <div class="header">
+        <h2>Status<img src="img/emotes/frazzled.gif" alt="current emotion"></h2>
+      </div>
+      <div class="sub-links">
+        <p>Busy with school and stuff >~<</p>
+      </div>
+    </div>
+
+    <div id="icon88x31">
+      <div class="header">
+        <h2>Site Button</h2>
+      </div>
+      <img src="img/suuug.gif" alt="site button gif">
+    </div>
+
+
+    <div id="kaiying-art">
+      <div class="header">
+        <h2>K's Museum</h2>
+      </div>
+      <img src="" alt="">
+    </div>
+
+    <div id="footer">
+      <div id="footer-left"></div>
+      <div id="footer-middle">
+        <p>Made with</p>
+        <img src="img/love.gif" alt="love gif">
+        <p>by suuug</p>
+      </div>
+      <div id="footer-right"></div>
+    </div>
+
+  </main>
+</body>
+<script src="fishtank.js"></script>
+  <script>
+    const tank = new FishTank('#fishtank', {
+  fish: [
+    { sprite: 'img/fish.gif', w: 118, h: 92 },
+    { sprite: 'img/fish2.gif',w: 59, h: 46 },
+    { sprite: 'img/fish.gif', w: 59, h: 46 },
+    { sprite: 'img/fish2.gif',w: 118, h: 92 },
+    { sprite: 'img/fish.gif', w: 59, h: 46 }
+  ],
+  background: 'img/fishtank.png',
+  backgroundFit: 'cover',
+  backgroundPosition: 'bottom'
+});
+  </script>
+</html>
