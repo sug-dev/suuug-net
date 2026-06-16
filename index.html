@@ -56,7 +56,7 @@
       <div class="header">
         <h2>K's Museum</h2>
       </div>
-      <img src="" alt="">
+      <div id="kaiying-bg"></div>
     </div>
 
     <div id="footer">
@@ -69,21 +69,25 @@
       <div id="footer-right"></div>
     </div>
 
+    <img id="naruto" src="img/naruto.gif" alt="naruto">
+
   </main>
 </body>
 <script src="fishtank.js"></script>
   <script>
     const tank = new FishTank('#fishtank', {
-  fish: [
-    { sprite: 'img/fish.gif', w: 118, h: 92 },
-    { sprite: 'img/fish2.gif',w: 59, h: 46 },
-    { sprite: 'img/fish.gif', w: 59, h: 46 },
-    { sprite: 'img/fish2.gif',w: 118, h: 92 },
-    { sprite: 'img/fish.gif', w: 59, h: 46 }
-  ],
-  background: 'img/fishtank.png',
-  backgroundFit: 'cover',
-  backgroundPosition: 'bottom'
-});
+      fish: [
+        { sprite: 'img/fish.gif', w: 118, h: 92 },
+        { sprite: 'img/fish2.gif',w: 59, h: 46 },
+        { sprite: 'img/fish3.gif', w: 59, h: 46 },
+        { sprite: 'img/fish3.gif', w: 59, h: 46 },
+        { sprite: 'img/fish2.gif',w: 118, h: 92 },
+        { sprite: 'img/fish.gif', w: 59, h: 46 }
+      ],
+      background: 'img/fishtank.png',
+      backgroundFit: 'cover',
+      backgroundPosition: 'bottom',
+      overlay: 'img/overlay.png'
+    });
   </script>
 </html>

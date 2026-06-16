@@ -41,75 +41,27 @@
 class FishTank {
   /* ─────────────────────── CONFIG ──────────────────────── */
   static DEFAULTS = {
-    fishCount: 5,
-    stepSize: 4,              // px per movement tick (DOS-style)
-    tickMs: 120,              // ms between ticks
-    restChance: 0.003,        // per-tick probability a wandering fish rests
-    restDuration: [3000, 8000],
-    bobAmplitude: 3,          // px up/down while resting or eating
-    bobSpeed: 0.06,           // radians per tick
-    foodDuration: 12000,      // ms a pellet lingers before disappearing
-    eatRadius: 20,            // px — how close a fish must be to eat
-    // Pellet count range relative to fishCount:
-    //   min = fishCount - foodUnderCount  (some fish miss out)
-    //   max = fishCount + foodOverCount   (extras for seconds)
+    fishCount: 6,
+    stepSize: 4,
+    tickMs: 120,
+    restChance: 0.003,
+    restDuration: [6000, 18000],
+    bobAmplitude: 5,
+    bobSpeed: 0.25,
+    foodDuration: 12000,
+    eatRadius: 10,
     foodUnderCount: 2,
     foodOverCount: 3,
-    fishColors: [
-      { body: '#FF6B6B', fin: '#C0392B', eye: '#222' },
-      { body: '#FFD93D', fin: '#F39C12', eye: '#222' },
-      { body: '#6BCB77', fin: '#27AE60', eye: '#222' },
-      { body: '#4D96FF', fin: '#1A5FB4', eye: '#222' },
-      { body: '#FF922B', fin: '#D35400', eye: '#222' },
-    ],
-    fishSize: { w: 38, h: 20 },   // default size; per-fish w/h can override
     dimOpacity: 0.80,
 
-    // ── Define your fish explicitly ──────────────────────────────
-    // `fish` is the primary way to set up the tank: one entry per fish,
-    // each with its own GIF sprite. The number of fish equals the length
-    // of this array — no separate count needed.
-    //
-    //   fish: [
-    //     { sprite: 'fish-orange.gif', w: 48, h: 28 },
-    //     { sprite: 'fish-blue.gif',   w: 40, h: 24 },
-    //     { sprite: 'fish-orange.gif' },          // reuse a GIF, default size
-    //   ]
-    //
-    // Per-entry fields:
-    //   sprite          — path/URL to the GIF (required for a sprite fish;
-    //                      omit to get a canvas-drawn fish instead)
-    //   w, h            — rendered size in px (defaults to fishSize)
-    //   faceLeftDefault — set true only if the artwork faces LEFT by default
-    //                     (right-facing GIFs: omit or leave false)
-    //   color           — { body, fin, eye } for canvas-drawn fish only
-    //
-    // If `fish` is left null, the tank falls back to the legacy fishCount /
-    // sprites / spriteFishCount options below.
     fish: null,
+    fishSize: { w: 38, h: 20 },   // default size; per-fish w/h can override
 
-    // ── Legacy fallback (used only when `fish` is null) ──────────
-    fishCount: 5,
-    fishColors: [
-      { body: '#FF6B6B', fin: '#C0392B', eye: '#222' },
-      { body: '#FFD93D', fin: '#F39C12', eye: '#222' },
-      { body: '#6BCB77', fin: '#27AE60', eye: '#222' },
-      { body: '#4D96FF', fin: '#1A5FB4', eye: '#222' },
-      { body: '#FF922B', fin: '#D35400', eye: '#222' },
-    ],
     sprites: [],
     spriteFishCount: null,
 
-    // ── Background image ─────────────────────────────────────────
-    // Provide a static image (PNG/JPG) to replace the drawn gradient,
-    // caustics, and seabed. Leave null to keep the drawn scene.
-    //   background: 'images/tank-bg.png'
-    // For an ANIMATED GIF background, don't use this option — set it as a
-    // CSS background on the container instead (see notes below the class).
     background: null,
-    // How the image fills the tank: 'cover' (fill, may crop),
-    // 'stretch' (fill exactly, may distort), or 'contain' (fit, may letterbox).
-    backgroundFit: 'cover',
+    overlay: null
   };
 
   constructor(selector, options = {}) {
@@ -136,9 +88,6 @@ class FishTank {
     this.ctx = this.canvas.getContext('2d');
     this._resize();
 
-    // Layer that holds animated GIF fish (<img> elements). Sits above the
-    // canvas (background/food) but below the dim overlay so lights-off
-    // darkens the sprites too.
     this.spriteLayer = document.createElement('div');
     this.spriteLayer.style.cssText =
       'position:absolute;inset:0;pointer-events:none;z-index:2;';
@@ -163,17 +112,22 @@ class FishTank {
     ro.observe(c);
 
     this.lightsOn  = true;
-    this.foods     = [];   // array of pellet objects
-    this._foodSeq  = 0;    // unique ID counter for pellets
+    this.foods     = [];
+    this._foodSeq  = 0;
     this.fishes    = [];
 
-    // Preload the background image (if any). _draw() uses it once loaded,
-    // and falls back to the drawn scene until then / if none is set.
     this.bgImage = null;
     if (this.cfg.background) {
       const img = new Image();
       img.onload = () => { this.bgImage = img; };
       img.src = this.cfg.background;
+    }
+
+    this.overlayImg = null;
+    if (this.cfg.overlay) {
+      const img = new Image();
+      img.onload = () => { this.overlayImg = img; };
+      img.src = this.cfg.overlay;
     }
   }
 
@@ -181,7 +135,7 @@ class FishTank {
     const b = document.createElement('button');
     b.textContent = label;
     b.style.cssText =
-      'font:13px/1 system-ui,sans-serif;padding:5px 10px;border-radius:999px;' +
+      'font:6px;padding:5px 10px;border-radius:999px;font-family:pixel;' +
       'border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.35);color:#fff;' +
       'cursor:pointer;transition:background .15s;';
     b.onmouseenter = () => (b.style.background = 'rgba(0,0,0,.6)');
@@ -199,24 +153,19 @@ class FishTank {
 
   /* ─────────────────────── FISH ──────────────────────── */
   _spawnFish() {
-    // Build a normalized list of fish specs from either the explicit `fish`
-    // array (preferred) or the legacy fishCount/sprites options.
     const specs = this._resolveFishSpecs();
     for (const spec of specs) this._createFish(spec);
   }
 
-  /** Produce an array of per-fish specs: { sprite, w, h, faceLeftDefault, color }. */
   _resolveFishSpecs() {
-    const { fish, fishCount, fishColors, fishSize, sprites, spriteFishCount } = this.cfg;
+    const { fish, fishCount, fishSize, sprites, spriteFishCount } = this.cfg;
 
-    // Preferred path: explicit list, one entry per fish.
     if (Array.isArray(fish) && fish.length) {
       return fish.map((f, i) => ({
         sprite:          f.sprite || null,
         w:               f.w || fishSize.w,
         h:               f.h || fishSize.h,
         faceLeftDefault: !!f.faceLeftDefault,
-        color:           f.color || fishColors[i % fishColors.length],
       }));
     }
 
@@ -232,7 +181,6 @@ class FishTank {
         w:               (def && def.w) || fishSize.w,
         h:               (def && def.h) || fishSize.h,
         faceLeftDefault: def ? !!def.faceLeftDefault : false,
-        color:           fishColors[i % fishColors.length],
       });
     }
     return specs;
@@ -363,7 +311,7 @@ class FishTank {
   _toggleLight() {
     this.lightsOn = !this.lightsOn;
     this.dimEl.style.opacity  = this.lightsOn ? '0' : this.cfg.dimOpacity;
-    this.lightBtn.textContent = this.lightsOn ? '💡 Light off' : '💡 Light on';
+    this.lightBtn.textContent = this.lightsOn ? 'Light off' : 'Light on';
   }
 
   /* ─────────────────────── MAIN LOOP ──────────────────────── */
@@ -504,85 +452,26 @@ class FishTank {
     const ctx = this.ctx;
     const W = this.W, H = this.H;
 
-    if (this.bgImage) {
-      // Custom image replaces the gradient, caustics, and seabed.
-      this._drawBackgroundImage(ctx, W, H);
-    } else {
-      // Default drawn scene.
-      const bg = ctx.createLinearGradient(0, 0, 0, H);
-      bg.addColorStop(0, '#0077b6');
-      bg.addColorStop(1, '#023e8a');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-      this._drawCaustics(ctx, W, H);
-      this._drawBed(ctx, W, H);
-    }
+    this._drawBackgroundImage(ctx, W, H);
 
     for (const p of this.foods) this._drawPellet(ctx, p);
     for (const f of this.fishes) {
-      if (f.sprite) this._positionSprite(f);
-      else          this._drawFish(ctx, f);
+      this._positionSprite(f);
     }
 
     this._drawOverlay(ctx, W, H)
   }
 
-  /* Draw the loaded background image to fill the tank per backgroundFit. */
   _drawBackgroundImage(ctx, W, H) {
     const img = this.bgImage;
-    const iw = img.naturalWidth, ih = img.naturalHeight;
-    const fit = this.cfg.backgroundFit;
-
-    if (fit === 'stretch') {
-      ctx.drawImage(img, 0, 0, W, H);
-      return;
-    }
-
-    // 'cover' fills the box (cropping overflow); 'contain' fits inside it.
-    const scale = fit === 'contain'
-      ? Math.min(W / iw, H / ih)
-      : Math.max(W / iw, H / ih);
-    const dw = iw * scale, dh = ih * scale;
-    const dx = (W - dw) / 2, dy = (H - dh) / 2;
-
-    if (fit === 'contain') {
-      // Letterbox fill so gaps aren't transparent.
-      ctx.fillStyle = '#023e8a';
-      ctx.fillRect(0, 0, W, H);
-    }
-    ctx.drawImage(img, dx, dy, dw, dh);
+    ctx.drawImage(img, 0, 0, W, H);
   }
 
   _drawOverlay(ctx, W, H) {
-    const img = new Image()
-    img.src = 'img/overlay.png'
-    const iw = img.naturalWidth, ih = img.naturalHeight
-    const fit = this.cfg.backgroundFit
-
-    if (fit === 'stretch') {
-      ctx.drawImage(img, 0, 0, W, H);
-      return;
-    }
-
-    // 'cover' fills the box (cropping overflow); 'contain' fits inside it.
-    const scale = fit === 'contain'
-      ? Math.min(W / iw, H / ih)
-      : Math.max(W / iw, H / ih);
-    const dw = iw * scale, dh = ih * scale;
-    const dx = (W - dw) / 2, dy = (H - dh) / 2;
-
-    if (fit === 'contain') {
-      // Letterbox fill so gaps aren't transparent.
-      ctx.fillStyle = '#023e8a';
-      ctx.fillRect(0, 0, W, H);
-    }
-    ctx.drawImage(img, dx, dy, dw, dh);
+    const img = this.overlayImg
+    ctx.drawImage(img, 0, 0, W, H);
   }
 
-  /* Position a GIF-sprite fish's <img> element. The GIF animates natively;
-     we only move it and flip it horizontally. Sprite faces right by default,
-     so we flip (scaleX(-1)) when the fish should face left — inverted if the
-     artwork's faceLeftDefault is set. */
   _positionSprite(f) {
     const { w, h } = f.sprite;
     const flip = f.sprite.faceLeftDefault ? !f.facingLeft : f.facingLeft;
@@ -590,53 +479,6 @@ class FishTank {
     const top  = Math.round(f.y - h / 2);
     f.el.style.transform =
       'translate(' + left + 'px,' + top + 'px)' + (flip ? ' scaleX(-1)' : '');
-  }
-
-  _drawCaustics(ctx, W, H) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
-    ctx.lineWidth = 1;
-    const t = performance.now() / 2000;
-    for (let i = 0; i < 6; i++) {
-      const x = (i * 137 + t * 30) % W;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.bezierCurveTo(x + 20, H * 0.3, x - 20, H * 0.6, x + 10, H);
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  _drawBed(ctx, W, H) {
-    ctx.save();
-    ctx.fillStyle = '#c9a84c';
-    ctx.fillRect(0, H - 18, W, 18);
-    const pebbles = [0.1, 0.25, 0.4, 0.55, 0.7, 0.85].map((r, i) => ({
-      x: r * W + (i * 31 % 30) - 15,
-      r: 4 + (i * 7 % 6),
-    }));
-    for (const p of pebbles) {
-      ctx.fillStyle = ['#8B7355', '#A0845C', '#6B7280'][p.r % 3];
-      ctx.beginPath();
-      ctx.ellipse(p.x, H - 12, p.r, p.r * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    for (let i = 0; i < 5; i++) {
-      const sx = (W * (i + 1)) / 6;
-      const t = performance.now() / 1200 + i;
-      ctx.strokeStyle = '#2d6a4f';
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(sx, H - 18);
-      ctx.bezierCurveTo(
-        sx + Math.sin(t) * 8,     H - 38,
-        sx + Math.sin(t + 1) * 8, H - 52,
-        sx + Math.sin(t + 2) * 6, H - 65,
-      );
-      ctx.stroke();
-    }
-    ctx.restore();
   }
 
   _drawPellet(ctx, p) {
@@ -649,49 +491,6 @@ class FishTank {
     ctx.strokeStyle = '#E76F51';
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.restore();
-  }
-
-  _drawFish(ctx, f) {
-    const { w, h } = this.cfg.fishSize;
-    ctx.save();
-    ctx.translate(Math.round(f.x), Math.round(f.y));
-    if (f.facingLeft) ctx.scale(-1, 1);
-
-    ctx.fillStyle = f.color.body;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = f.color.fin;
-    ctx.beginPath();
-    ctx.moveTo(-w / 2, 0);
-    ctx.lineTo(-w / 2 - 12, -h / 2 - 2);
-    ctx.lineTo(-w / 2 - 12,  h / 2 + 2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = f.color.fin;
-    ctx.beginPath();
-    ctx.moveTo(-4, -h / 2);
-    ctx.lineTo( 6, -h / 2 - 8);
-    ctx.lineTo(14, -h / 2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(w / 2 - 9, -2, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = f.color.eye;
-    ctx.beginPath();
-    ctx.arc(w / 2 - 8, -2, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(w / 2 - 7.5, -2.5, 0.8, 0, Math.PI * 2);
-    ctx.fill();
-
     ctx.restore();
   }
 
