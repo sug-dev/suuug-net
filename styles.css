@@ -6,7 +6,7 @@
   --text-one: #2d6a4f;
   --text-two: ;
   --accent-one: #0096FF;
-  --accent-two: ;
+  --accent-two: #006ebd;
 }
 
 html[data-theme="dark"] {
@@ -26,6 +26,7 @@ html[data-theme="dark"] {
   box-sizing: border-box;
   font-family: sans-serif;
   color: var(--text-one);
+  font-size: 14px;
 }
 
 img {
@@ -57,42 +58,76 @@ main {
   background-size: cover;
 }
 
+#main-content {
+    align-items: normal;
+    padding: 5px;
+    gap: 5px;
+    overflow-y: scroll;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.post-links {
+    padding: 1rem;
+}
+
+.post-link {
+    color: var(--accent-one);
+    gap: 0.75rem;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.post-link:hover {
+    color: var(--accent-two);
+    text-decoration: underline;
+}
+
 .sub-container {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   background-color: var(--darkest);
   border: solid 1px var(--border);
   box-shadow: 2px 2px 3px rgba(0,0,0,0.15);
+  border-radius: 6px;
 }
 
 .sub-list {
-  flex: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 0.5em;
-  padding: 1em;
+  gap: 0.5rem;
+  padding: 1rem;
 }
 
 .sub-list > div {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: 0.25rem;
+}
+
+.sub-list > div > h6 {
+  font-size: 10px;
 }
  
+.sub-list li,
 .sub-list a {
   display: flex;
   align-items: center;
-  gap: 0.75em;
-  text-align: center;
-  font-size: 0.85em;
+  gap: 0.75rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.sub-list a:hover {
+.sub-list li p:hover {
   color: var(--accent-one);
 }
 
@@ -111,15 +146,45 @@ main {
 .header {
   height: 32px;
   width: 100%;
-  font-size: 0.65em;
+  font-size: 0.65rem;
   background-color: var(--dark);
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
   border-bottom: solid 1px var(--border);
-  padding-block: 0.5em;
-  padding-bottom: 0.4em;
+  padding-inline: 1rem;
   display: flex;
-  gap: 0.5em;
+  gap: 0.5rem;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+}
+
+#status {
+    display: inline;
+    position: relative;
+    margin-left: 90px;
+    border: solid 1px var(--border);
+    border-radius: 6px;
+    padding: 0.75em 0.85rem;
+    font-style: italic;
+}
+#status::before {
+    content: '';
+    position: absolute;
+    height: 12px;
+    aspect-ratio: 1/1;
+    top: 50%; 
+    left: -13px; 
+    transform: rotate(46deg) translateY(-8px); 
+    border-bottom: solid 1px; 
+    border-left: solid 1px; 
+    border-top-right-radius: 999px;
+    background-color: var(--darkest);
+    border-color: var(--border)!important;
+}
+#status-date {
+    margin-left: 104px;
+    font-size: 11px;
+    color: var(--border);
 }
 
 #kaiying-art {
@@ -132,6 +197,45 @@ main {
   background: url('img/kaiying.png');
   background-position: center;
   background-size: cover;
+}
+
+.main-sub-container {
+    display: flex;
+    flex-direction: column;
+    border: solid 1px var(--border);
+    border-radius: 3px !important;
+}
+
+.main-sub-header {
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    background-color: var(--dark);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: solid 1px var(--border);
+    padding: 0 1em;
+}
+
+.main-sub-container p {
+    padding: 1em;
+    white-space: pre-wrap;
+}
+
+#rating {
+    margin: 0 1em 1em auto;
+    padding: 0.5rem;
+    background-color: var(--darker);
+    border-radius: 3px;
+    border: solid 1px var(--border);
+}
+
+.inactive {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 #footer {
@@ -147,19 +251,6 @@ main {
   align-items: center;
 }
 
-#footer-left {
-  grid-column: 1 / 4;
-}
-
-#footer-middle {
-  grid-column: 4 / 10;
-  gap: 0.75em;
-}
-
-#footer-right {
-  grid-column: 10 / 13;
-}
-
 #naruto {
   position: absolute;
   bottom: -123px;
@@ -171,4 +262,10 @@ main {
     top: -19px;
     left: 30px;
     width: 300px;
+}
+
+#habbo-sprite {
+    position: absolute;
+    left: -25px;
+    top: -40px;
 }
