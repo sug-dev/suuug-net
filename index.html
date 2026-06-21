@@ -13,11 +13,11 @@
 <body>
   <main>
 
-    <a id="hero-image" class="sub-container" href="index.html" style="grid-column: 1/5; grid-row: 1/3;">
+    <a id="hero-image" class="sub-container" href="index.html">
       <img src="img/team7.png" id="team7" alt="">
     </a>
 
-    <div id="top-bar" class="sub-container" style="grid-column: 5/13; grid-row: 1/3;">
+    <div id="top-bar" class="sub-container">
         <div class="header">
             <h2>Status</h2>
         </div>
@@ -30,34 +30,35 @@
         </div>
     </div>
 
-    <div id="main-content" class="sub-container" style="grid-column: 3/11; grid-row: 3/12;">
+    <div id="main-content" class="sub-container">
         <div style="margin: auto; display: flex; align-items: center; gap: 5px;">
             <p>under construction...</p>
             <img src="img/worker.gif" class="small-gif" alt="construction gif">
         </div>
     </div>
 
-    <nav id="nav" class="sub-container" style="grid-column: 1/3; grid-row: 3/9;">
-      <div class="header">
+    <nav id="nav" class="sub-container">
+      <div id="nav-header" class="header">
         <h2>Navigation</h2>
+        <button id="nav-toggle">|||</button>
       </div>
-      <ul class="sub-list">
-        <li class=""><a href="/"><img src="img/house.gif" class="small-gif" alt=""><p>Home</p></a></li>
-        <li class="inactive"><img src="img/bird.gif" class="small-gif" alt=""><p>About Me</p></li>
-        <li id="blog-link"><img src="img/blog.gif" class="small-gif inactive" alt=""><p>Blog</p></li>
-        <li class="inactive"><img src="img/camera.gif" class="small-gif inactive" alt=""><p>Photos</p></li>
-        <li hx-get='https://theculdesac.club/api/media-log' hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML"><img src="img/tv.gif" class="small-gif" alt=""><p>Media Log</p></li>
-        <li class="inactive"><img src="img/writing.gif" class="small-gif inactive" alt=""><p>Articles</p></li>
-        <li class="inactive"><img src="img/computer.gif" class="small-gif inactive" alt=""><p>Resources</p></li>
-        <li class="inactive"><img src="img/book.gif" class="small-gif inactive" alt=""><p>Guestbook</p></li>
+      <ul id="nav-list" class="sub-list">
+        <li class="navigation-link"><a href="/"><img src="img/house.gif" class="small-gif" alt=""><p>Home</p></a></li>
+        <li class="navigation-link" hx-get='https://theculdesac.club/api/about' hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML"><img src="img/bird.gif" class="small-gif" alt=""><p>About Me</p></li>
+        <li class="navigation-link" id="blog-link"><img src="img/blog.gif" class="small-gif" alt=""><p>Blog</p></li>
+        <li class="navigation-link inactive"><img src="img/camera.gif" class="small-gif inactive" alt=""><p>Photos</p></li>
+        <li class="navigation-link" hx-get='https://theculdesac.club/api/media-log' hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML"><img src="img/tv.gif" class="small-gif" alt=""><p>Media Log</p></li>
+        <li class="navigation-link inactive"><img src="img/writing.gif" class="small-gif inactive" alt=""><p>Articles</p></li>
+        <li class="navigation-link" hx-get='https://theculdesac.club/api/resources' hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML"><img src="img/computer.gif" class="small-gif" alt=""><p>Resources</p></li>
+        <li class="navigation-link inactive"><img src="img/book.gif" class="small-gif inactive" alt=""><p>Guestbook</p></li>
       </ul>
     </nav>
 
-    <div id="fishtank" class="sub-container" style="grid-column: 1/3; grid-row: 9/12; overflow: hidden;">
+    <div id="fishtank" class="sub-container">
       <div id="fishtank-controls" class="header"></div>
     </div>
 
-    <div id="currently" class="sub-container" style="grid-column: 11/13; grid-row: 3/8;">
+    <div id="currently" class="sub-container">
       <div class="header">
         <h2>Currently...</h2>
       </div>
@@ -73,35 +74,40 @@
         </div>
         <div class="divider"></div>
         <div>
-            <h6>Listening: </h6>
+            <h6>Listening To: </h6>
             <p>Nothing</p>
         </div>
         <div class="divider"></div>
+        <div>
+            <h6>Studying: </h6>
+            <p>Algebra & Japanese</p>
+        </div>
       </div>
     </div>
 
-    <div id="icon88x31" class="sub-container" style="grid-column: 11/13; grid-row: 8/9;">
-      <div class="header">
-        <h2>Site Button</h2>
-      </div>
-      <a download="88x31.gif" href="img/suuug.gif"><img src="img/suuug.gif" alt="site button gif"></a>
-    </div>
-
-    <div id="kaiying-art" class="sub-container" style="grid-column: 11/13; grid-row: 9/12;">
+    <div id="kaiying-art" class="sub-container">
       <div class="header">
         <h2>K's Museum</h2>
       </div>
       <div id="kaiying-bg"></div>
     </div>
 
-    <div id="footer" class="sub-container" style="grid-column: 1/13; grid-row: 12/13;">
-      <div id="footer-left" style="grid-column: 1/4;"></div>
-      <div id="footer-middle" style="grid-column: 4/10; gap: 0.75em;">
+    <div id="footer" class="sub-container">
+      <div id="footer-left">
+        <a download="88x31.gif" href="img/suuug.gif"><img src="img/suuug.gif" alt="site button gif"></a>
+      </div>
+      <div id="footer-middle">
         <p>Made with</p>
         <img src="img/love.gif" alt="love gif">
-        <p>by suuug</p>
+        <p>by suuug~</p>
       </div>
-      <div id="footer-right" style="grid-column: 10/13;"></div>
+      <div id="footer-right">
+        <img class="small-gif" src="img/sun.gif" alt="light mode icon">
+        <div>
+            <input type="checkbox" name="" id="theme-toggler">
+        </div>
+        <img class="small-gif" src="img/moon.gif" alt="dark mode icon">
+      </div>
     </div>
 
     <img id="naruto" src="img/naruto.gif" alt="naruto is believing it">

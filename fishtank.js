@@ -33,7 +33,7 @@ class FishTank {
     const c = this.container
 
     const bar = document.getElementById('fishtank-controls')
-    bar.style.cssText = 'z-index: 100000; display: flex; justify-content: space-evenly;'
+    bar.style.cssText = 'z-index: 100000; display: flex; justify-content: space-between;'
     c.appendChild(bar)
 
     this.feedBtn = this._btn('Feed', () => this._dropFood())

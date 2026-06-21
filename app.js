@@ -1,3 +1,6 @@
+const htmlElement = document.documentElement
+const themeToggle = document.getElementById('theme-toggler')
+
 async function bl() {
     const main = document.getElementById('main-content')
     const post_links = document.createElement('div')
@@ -58,7 +61,7 @@ async function bl() {
         }
         const link_title = document.createElement('li')
         link_title.className = 'post-link'
-        link_title.innerHTML = `${new Date(post.date).toDateString()} – ${post.title}`
+        link_title.innerHTML = `${new Date(post.date).toDateString().slice(4)} – ${post.title}`
 
         post_links_sub.appendChild(link_title)
         post_links.appendChild(post_links_sub)
@@ -123,11 +126,62 @@ document.getElementById('blog-link').addEventListener('click', () => {
     bl()
 })
 
-// async function ml() {
-//     const response = await fetch('https://theculdesac.club/api/media-log')
-//     const html = await response.text()
+const navList = document.getElementById('nav-list')
+const navHeader = document.getElementById('nav-header')
 
-//     console.log(typeof html)
-// }
+function toggleNav() {
+    if (navList.classList.contains('hidden')) {
+        navList.classList.remove('hidden')
+        navHeader.classList.add('bottom-border')
+    } else {
+        navList.classList.add('hidden')
+        navHeader.classList.remove('bottom-border')
+    }
+}
 
-// ml()
+document.getElementById('nav-toggle').addEventListener('click', () => {
+    toggleNav()
+})
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.innerWidth <= 792) {
+        navList.classList.add('hidden')
+    }
+    const theme = localStorage.getItem('theme')
+    if (theme) {
+        htmlElement.setAttribute("data-theme", theme)
+        if (theme === 'dark') {
+            themeToggle.toggleAttribute('checked')
+        }
+    }
+})
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth <= 792) {
+        navList.classList.add('hidden')
+    } else navList.classList.remove('hidden')
+})
+
+const ll = document.querySelectorAll('.navigation-link')
+
+ll.forEach((l) => {
+    l.addEventListener('click', () => {
+        if (window.innerWidth <= 792) {
+            navList.classList.add('hidden')
+            navHeader.classList.remove('bottom-border')
+        }
+    })
+})
+
+// Function to switch themes
+function toggleTheme() {
+    const currentTheme = htmlElement.getAttribute("data-theme")
+    const newTheme = currentTheme === "dark" ? "light" : "dark"
+    
+    htmlElement.setAttribute("data-theme", newTheme)
+    localStorage.setItem("theme", newTheme)
+}
+
+themeToggle.addEventListener('click', () => {
+    toggleTheme()
+})
