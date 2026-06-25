@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="htmx-config" content='{"selfRequestsOnly":false}'>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
-  <script src="fishtank.js"></script>
-  <script defer src="app.js"></script>
-  <title>suuug's room</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="htmx-config" content='{"selfRequestsOnly":false}'>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="suuug.net" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+    <script src="fishtank.js"></script>
+    <script defer src="app.js"></script>
+    <title>suuug's room</title>
 </head>
 <body>
   <main>
@@ -31,7 +37,11 @@
     </div>
 
     <div id="main-content" class="sub-container">
-        <div hx-get='https://theculdesac.club/api/about' hx-trigger="load" hx-target="#main-content" hx-swap="innerHTML" style="margin: auto; display: flex; align-items: center; gap: 5px;">
+        <div class="main-sub-container">
+            <div class="main-sub-header">
+                <h2>About Me</h2>
+            </div>
+            <p>29 / USA &amp; JP / American.<br><br>Previously a freelance software developer, but now unemployed and figuring out which direction I want my career to go.<br><br>Bouncing between America and Japan. Pursuing a Bachelor's degree so I can apply for work visas overseas. Building websites, making music, and playing gigs are what I spend my time doing. Oh, and a lot of movies recently, too.<br><br>I am a bird-enthusiast. I also have a pet bird. She's 10 years old now and lives with my friend since it's too difficult taking her to and from Japan. She's in good hands, and I'm sure she doesn't miss me. :)<br><br>While culturally a Gamer &#8482; I am not regularly practicing at the time. That being said, some of my favorites are the Souls series, Minecraft, Kenshi, and various 'retro' games. Add me on <a href="https://habbo.com"><span class="accent">Habbo!</span></a> @suuug</p>
         </div>
     </div>
 
