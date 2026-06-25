@@ -122,9 +122,9 @@ async function r() {
 
 r()
 
-document.getElementById('blog-link').addEventListener('click', () => {
+if (window.location.pathname === "/blog.html") {
     bl()
-})
+}
 
 const navList = document.getElementById('nav-list')
 const navHeader = document.getElementById('nav-header')
