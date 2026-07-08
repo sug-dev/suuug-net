@@ -62,6 +62,8 @@ function create_element(tag, className, text) {
 // Blog
 ///////
 
+let all_posts
+
 function latest_post(post) {
     const container = create_element("div", "main-sub-container")
 
@@ -69,7 +71,7 @@ function latest_post(post) {
     header.appendChild(create_element("h3", null, "Latest Post"))
 
     const content = create_element("p")
-    content.innerHTML = post.content
+    content.innerHTML = `<b style="text-decoration: underline;">${post.title}</b><br><br>${post.content}`
 
     container.append(header, content)
 
@@ -91,13 +93,24 @@ function recent_posts(posts) {
             "post-link",
             `${new Date(post.date).toDateString().slice(4)} – ${post.title}`
         )
-
+        item.addEventListener('click', () => {
+            swap_post(post)
+        })
         list.appendChild(item)
     })
 
     container.append(header, list)
 
     return container
+}
+
+function swap_post(post) {
+    elements.main.innerHTML = ""
+
+    elements.main.append(
+        latest_post(post),
+        recent_posts(all_posts)
+    )
 }
 
 async function load_all_posts() {
@@ -109,12 +122,15 @@ async function load_all_posts() {
             return
         }
 
+        all_posts = posts
+
         elements.main.innerHTML = ""
 
         elements.main.append(
             latest_post(posts[0]),
-            recent_posts(posts)
+            recent_posts(all_posts)
         )
+
     } catch (err) {
         console.error("Failed to load blog posts:", err)
     }
