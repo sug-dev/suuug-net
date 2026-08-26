@@ -15,9 +15,8 @@ class FishTank {
       fish: [
         { sprite: 'img/fish1.gif', w: 59, h: 46 },
         { sprite: 'img/fish2.gif',w: 59, h: 46 },
-        { sprite: 'img/fish3.gif', w: 59, h: 46 },
       ],
-      background: 'img/fishtank.png',
+      background: 'img/fishtank.webp',
       backgroundFit: 'cover',
       backgroundPosition: 'bottom',
       overlay: 'img/overlay.png'

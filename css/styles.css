@@ -233,17 +233,11 @@ ul {
     grid-column: 11/13;
     grid-row: 9/12;
     overflow: hidden;
-    background: url('../img/kaiying.png');
+    border: solid 1px var(--border);
+    background: url('../img/kaiying.webp');
     background-position: center;
     background-size: cover;
-}
-
-#kaiying-bg {
-    width: 100%;
-    flex: 1;
-    background: url('../img/kaiying.png');
-    background-position: center;
-    background-size: cover;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.15);
 }
 
 .main-sub-container {
